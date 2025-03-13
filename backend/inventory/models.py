@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 # Create your models here.
 class Category(models.Model):
@@ -50,7 +50,7 @@ class StockMovement(models.Model):
     movement_type = models.CharField(max_length=3, choices=MOVEMENT_CHOICES)
     quantity = models.PositiveIntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.movement_type} {self.quantity} of {self.item.name}"
