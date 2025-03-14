@@ -3,7 +3,7 @@
   <nav class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded">
     <div class="container flex flex-wrap justify-between items-center mx-auto">
       <router-link to="/" class="flex items-center">
-        <img src="../assets/logo.png" class="mr-3 h-14 sm:h-16" alt="Flowbite Logo">
+        <img src="../assets/vue.svg" class="mr-3 h-14 sm:h-16" alt="Flowbite Logo">
         <span class="self-center text-3xl font-semibold whitespace-nowrap">eCart</span>
       </router-link>
       <div class="flex items-center md:order-2">
@@ -27,7 +27,7 @@
         <button type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 ">
           <span class="sr-only">Open user menu</span>
           <div class="relative">
-            <img class="w-10 h-10 rounded-full" src="../assets/logo.png" alt="">
+            <img class="w-10 h-10 rounded-full" src="../assets/vue.svg" alt="">
             <span class="top-0 left-7 absolute  w-3.5 h-3.5 bg-green-400 border-2 border-white "></span>
           </div>
         </button>
@@ -82,7 +82,7 @@
 
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {UserAuthStore} from "@/stores/userAuthStore";
 
     const store = UserAuthStore()
