@@ -1,120 +1,7 @@
-<!--<template>-->
-<!--  <div class="flex items-start justify-center min-h-screen pt-5 min-w-screen">-->
-<!--    <div class="flex flex-wrap w-full px-4">-->
-<!--      <div v-for="item in store.getDashboardItems" :key="item">-->
-<!--        <div class="flex items-center overflow-hidden rounded-lg border border-gray-200 shadow-md h-16 w-64 mx-5">-->
-<!--          <div-->
-<!--              class="h-full w-1/3 flex items-center justify-center" :class="item.colour">-->
-
-<!--            <h4 class="text-2xl font-mono text-white">{{ item.abbr }}</h4>-->
-<!--          </div>-->
-<!--          <div class="w-2/3">-->
-<!--            <h4 class="text-2xl font-semibold text-gray-900">{{ item.no }}</h4>-->
-<!--            <div class="text-gray-900">{{ item.title }}</div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-
-
-<!--</template>-->
-
-<!--<script setup>-->
-<!--import {InventoryStore} from '@/stores/inventoryStore.js'-->
-<!--const store = InventoryStore()-->
-
-<!--</script>-->
-<!--<style scoped>-->
-
-<!--</style>-->
-
-
-<!--<script setup>-->
-<!--import { computed, ref } from "vue";-->
-<!--import { InventoryStore } from "@/stores/inventoryStore.js";-->
-<!--import Chart from "@/components/Chart.vue";-->
-
-<!--const store = InventoryStore();-->
-
-<!--// Dashboard Items-->
-<!--const dashboardItems = computed(() => [-->
-<!--  { title: "New Inventory", no: store.getNumberOfItems, colour: "bg-green-600", abbr: "NP" },-->
-<!--  { title: "Orders", no: 0, colour: "bg-orange-600", abbr: "OR" }-->
-<!--]);-->
-
-<!--// Sample Charts Data (Replace with actual API data)-->
-<!--const chartsData = ref([-->
-<!--  {-->
-<!--    title: "Inventory Distribution",-->
-<!--    chartType: "pie",-->
-<!--    data: {-->
-<!--      labels: ["Electronics", "Clothing", "Food", "Furniture"],-->
-<!--      datasets: [-->
-<!--        {-->
-<!--          label: "Inventory Count",-->
-<!--          backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"],-->
-<!--          data: [50, 30, 80, 20]-->
-<!--        }-->
-<!--      ]-->
-<!--    },-->
-<!--    options: { responsive: true, maintainAspectRatio: false }-->
-<!--  },-->
-<!--  {-->
-<!--    title: "Monthly Orders Trend",-->
-<!--    chartType: "line",-->
-<!--    data: {-->
-<!--      labels: ["Jan", "Feb", "Mar", "Apr", "May"],-->
-<!--      datasets: [-->
-<!--        {-->
-<!--          label: "Orders",-->
-<!--          borderColor: "#4bc0c0",-->
-<!--          fill: false,-->
-<!--          data: [5, 10, 3, 15, 7]-->
-<!--        }-->
-<!--      ]-->
-<!--    },-->
-<!--    options: { responsive: true, maintainAspectRatio: false }-->
-<!--  },-->
-<!--  {-->
-<!--    title: "Stock Levels",-->
-<!--    chartType: "bar",-->
-<!--    data: {-->
-<!--      labels: ["Laptops", "Phones", "Tablets", "TVs"],-->
-<!--      datasets: [-->
-<!--        {-->
-<!--          label: "Stock Quantity",-->
-<!--          backgroundColor: ["#36a2eb", "#ffce56", "#ff6384", "#4bc0c0"],-->
-<!--          data: [100, 75, 50, 25]-->
-<!--        }-->
-<!--      ]-->
-<!--    },-->
-<!--    options: { responsive: true, maintainAspectRatio: false }-->
-<!--  },-->
-<!--  {-->
-<!--    title: "Order Fulfillment Status",-->
-<!--    chartType: "doughnut",-->
-<!--    data: {-->
-<!--      labels: ["Pending", "Completed", "Cancelled"],-->
-<!--      datasets: [-->
-<!--        {-->
-<!--          label: "Orders",-->
-<!--          backgroundColor: ["#ffce56", "#36a2eb", "#ff6384"],-->
-<!--          data: [10, 20, 5]-->
-<!--        }-->
-<!--      ]-->
-<!--    },-->
-<!--    options: { responsive: true, maintainAspectRatio: false }-->
-<!--  }-->
-<!--]);-->
-<!--</script>-->
-
-
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen w-full px-4 py-5">
-    <div class="flex flex-wrap w-full justify-center mb-6">
-      <div v-for="item in dashboardItems" :key="item.title" class="mx-3">
+  <div class="flex flex-col justify-around w-full h-full relative px-4 py-5 gap-y-8 overflow-y-auto">
+    <div class="flex flex-wrap w-full justify-center gap-6">
+      <div v-for="item in dashboardItems" :key="item.title">
         <div class="flex items-center overflow-hidden rounded-lg border border-gray-200 shadow-md h-16 w-64">
           <div class="h-full w-1/3 flex items-center justify-center" :class="item.colour">
             <h4 class="text-2xl font-mono text-white">{{ item.abbr }}</h4>
@@ -127,81 +14,108 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-full max-w-5xl">
-      <Chart v-for="(chart, index) in chartsData" :key="index" :title="chart.title" :chartType="chart.chartType" :data="chart.data" :options="chart.options" />
+    <div class="flex flex-col justify-around w-full h-full relative gap-y-8">
+ <h1 class="text-2xl font-bold mb-4">Inventory Charts</h1>
+      <div class="flex flex-row gap-y-6 justify-around w-full flex-wrap lg:flex-nowrap">
+       <div class="w-full relative bg-white p-4 rounded-lg shadow-md">
+         <h2 class="text-lg font-semibold mb-2">Item Quantities</h2>
+         <BarChart :chart-data="barChartData" :chart-options="chartOptions" />
+       </div>
+     <div class="w-full relative bg-white p-4 rounded-lg shadow-md">
+       <h2 class="text-lg font-semibold mb-2">Category Distribution</h2>
+       <DoughnutChart :chart-data="doughnutChartData" :chart-options="chartOptions" />
+     </div>
+      </div>
+
+
+          <!-- Line Chart for Stock Movement -->
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold mb-2">Stock Movement Over Time</h2>
+            <LineChart :chart-data="lineChartData" :chart-options="chartOptions" />
+          </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+
+import {computed, ref, toRaw, watch, watchEffect} from "vue";
 import { InventoryStore } from "@/stores/inventoryStore.js";
 import Chart from "@/components/Chart.vue";
+import BarChart from "@/components/BarChart.vue";
+import DoughnutChart from "@/components/DoughnutChart.vue";
+import LineChart from "@/components/LineChart.vue";
+
+// Global Chart Options
+const chartOptions = ref({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: true } }
+});
 
 const store = InventoryStore();
 
 const dashboardItems = computed(() => [
-  { title: "New Inventory", no: store.getNumberOfItems, colour: "bg-green-600", abbr: "NP" },
-  { title: "Orders", no: 0, colour: "bg-orange-600", abbr: "OR" }
-]);
+  { title: "Inventory", no: items.value.length, colour: "bg-green-600", abbr: "Inv" },
+  { title: "Categories", no: categories.value.length, colour: "bg-orange-600", abbr: "Cat" },
+  { title: "Suppliers", no: computed(()=> store.getSuppliers.length), colour: "bg-violet-600", abbr: "Sup" }
 
-const chartsData = ref([
-  {
-    title: "Inventory Distribution",
-    chartType: "pie",
-    data: {
-      labels: ["Electronics", "Clothing", "Food", "Furniture"],
-      datasets: [{
-        label: "Inventory Count",
-        backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"],
-        data: [50, 30, 80, 20]
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false }
-  },
-  {
-    title: "Monthly Orders Trend",
-    chartType: "line",
-    data: {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May"],
-      datasets: [{
-        label: "Orders",
-        borderColor: "#4bc0c0",
-        fill: false,
-        data: [5, 10, 3, 15, 7]
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false }
-  },
-  {
-    title: "Stock Levels",
-    chartType: "bar",
-    data: {
-      labels: ["Laptops", "Phones", "Tablets", "TVs"],
-      datasets: [{
-        label: "Stock Quantity",
-        backgroundColor: ["#36a2eb", "#ffce56", "#ff6384", "#4bc0c0"],
-        data: [100, 75, 50, 25]
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false }
-  },
-  {
-    title: "Order Fulfillment Status",
-    chartType: "doughnut",
-    data: {
-      labels: ["Pending", "Completed", "Cancelled"],
-      datasets: [{
-        label: "Orders",
-        backgroundColor: ["#ffce56", "#36a2eb", "#ff6384"],
-        data: [10, 20, 5]
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false }
-  }
 ]);
+const generateColors = (count) => {
+  const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"];
 
-console.log(chartsData)
+  return Array.from({ length: count }, (_, i) => colors[i] || randomColor());
+};
+
+const randomColor = () => {
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+};
+
+const barChartData = ref({
+  labels: items.value.map(item => item.name),
+  datasets: [
+    {
+      label: "Quantity",
+      data: items.value.map(item => item.quantity),
+      backgroundColor: generateColors(items.value.length)
+    }
+  ]
+});
+
+const doughnutChartData = ref({
+  labels: computed(()=> store.getDoughnutChart).value?.labels,
+  datasets: [
+    {
+      label: "Categories",
+      data: computed(()=> store.getDoughnutChart).value?.data,
+      backgroundColor: generateColors(computed(()=> store.getDoughnutChart).value?.data?.length)
+    }
+  ]
+});
+
+// Function to generate random colors
+const getRandomColor = () => {
+  const r = Math.floor(Math.random() * 255);
+  const g = Math.floor(Math.random() * 255);
+  const b = Math.floor(Math.random() * 255);
+  return `rgb(${r},${g},${b})`;
+};
+
+const lineChartData = ref({
+  labels: computed(() => store.getLineChart?.labels || []),
+  datasets: computed(() =>
+      store.getLineChart?.datasets?.map((item) => ({
+        label: item.label,
+        data: item.data,
+        borderColor: getRandomColor(),
+        backgroundColor: "rgba(0, 0, 0, 0)",
+      })) || []
+  )
+});
+
+watchEffect(()=>store.getLineChart)
+
 </script>
 
 <style scoped>

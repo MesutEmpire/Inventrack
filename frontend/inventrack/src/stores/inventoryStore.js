@@ -23,6 +23,8 @@ export const InventoryStore = defineStore('inventory', ()=>{
   const categories = ref([])
   const showModal = ref(false)
   const modelId = ref(null)
+  const lineChartData = ref({})
+  const doughnutChartData = ref({})
 
   //GETTERS
   const getInventory = computed(()=> {
@@ -43,6 +45,8 @@ export const InventoryStore = defineStore('inventory', ()=>{
   const getCategories = computed(()=> categories.value)
   const getShowModal = computed(()=> showModal.value)
   const getModalId = computed(()=> modelId.value)
+  const getLineChart = computed(()=> lineChartData.value)
+  const getDoughnutChart = computed(()=> doughnutChartData.value)
 
   //ACTIONS
     const fetchInventory = async () => {
@@ -233,10 +237,49 @@ export const InventoryStore = defineStore('inventory', ()=>{
       }
   }
 
+  const fetchLineChartData = async () => {
+    try {
+      const token = Cookies.get('access_token');
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/charts/line?item_id=14`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const res = await response.json();
+     lineChartData.value = res.data
+      console.log("Line Chart Data:", res);
+    } catch (error) {
+      console.error("Error fetching line chart data:", error);
+    }
+  };
+
+  const fetchDoughnutChartData = async () => {
+    try {
+      const token = Cookies.get('access_token');
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/charts/doughnut`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const res = await response.json();
+      doughnutChartData.value = res.data
+      console.log("Doughnut Chart Data:",res);
+    } catch (error) {
+      console.error("Error fetching doughnut chart data:", error);
+    }
+  };
+
+
 
   return {
-    inventoryItems,inventoryForm,searchedInventory,foundSearchedInventory,deleteMultipleItems,suppliers,categories,showModal,modelId,getInventory,getNumberOfItems,getDashboardItems,getSuppliers,getCategories,getShowModal,getModalId,
-    fetchInventory,addNewInventoryItem,searchInventory,deleteInventoryItem,deleteMultipleInventoryItems,fetchSuppliers,fetchCategories,resetInventoryForm,toggleShowModal,setInventoryForm,updateInventoryItem
+    inventoryItems,inventoryForm,searchedInventory,foundSearchedInventory,deleteMultipleItems,suppliers,categories,showModal,modelId,lineChartData,doughnutChartData,getInventory,getNumberOfItems,getDashboardItems,getSuppliers,getCategories,getShowModal,getModalId,getDoughnutChart,getLineChart,
+    fetchInventory,addNewInventoryItem,searchInventory,deleteInventoryItem,deleteMultipleInventoryItems,fetchSuppliers,fetchCategories,resetInventoryForm,toggleShowModal,setInventoryForm,updateInventoryItem,fetchLineChartData,fetchDoughnutChartData
 
   }
 });

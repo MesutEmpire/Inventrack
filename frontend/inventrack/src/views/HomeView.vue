@@ -22,6 +22,10 @@ const store = InventoryStore()
 
 watchEffect(()=>{
   store.fetchInventory()
+  store.fetchCategories()
+  store.fetchSuppliers()
+  store.fetchDoughnutChartData()
+  store.fetchLineChartData()
 })
 
 
