@@ -1,34 +1,30 @@
 <template>
-
   <div class="">
-    <div
-        class="w-auto max-w-auto"
+    <div class="w-auto max-w-auto"
     >
       <div class="px-2 py-2">
-<!--        <span class="bg-gray-300 rounded-full w-8 h-8 text-2xl font-mono text-white">-->
-<!--         {{store.getCurrentUser.fullName.charAt(0)}}-->
-<!--        </span>-->
-        <div v-if="store.getCurrentUser" class="flex flex-wrap items-center justify-center my-3">
+        <div v-if="currentUser" class="flex flex-wrap items-center justify-center my-3">
           <span class="inline">
           <button type="button"
                   :class="color.state"
                   class="flex mr-3 text-2xl rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
 <!--          <span class="sr-only">Open user menu</span>-->
             <!--          <img class="w-12 h-12 rounded-full" src="../assets/logo.png" alt="user photo" />-->
-          <h4 class=" flex items-center justify-center w-14 h-14 text-2xl font-mono text-white">{{store.getCurrentUser.fullName.charAt(0)}}</h4>
+          <h4 class=" flex items-center justify-center w-14 h-14 text-2xl font-mono text-white">{{currentUser?.first_name?.charAt(0) ?? ""}}</h4>
         </button>
         </span>
           <span class="inline-block">
-          <span class="block text-sm text-gray-90">{{store.getCurrentUser.fullName}}</span
+          <span class="block text-sm text-gray-90">{{currentUser?.first_name }} {{" "}} {{currentUser?.last_name}}</span
           >
-        <span class="block text-sm font-medium text-gray-500 truncate">{{store.getCurrentUser.email}}</span>
+        <span class="block text-sm font-medium text-gray-500 truncate">{{currentUser?.email}}</span>
        </span>
         </div>
 <!--        //{{ store.getUser.email }}-->
         <ul>
           <li class="my-px">
-            <router-link key="dashboard" to="/dashboard/"
+            <RouterLink key="dashboard" to="/dashboard"
                 class="borderTab flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-pink-100"
+                         exactActiveClass="text-pink-600 bg-pink-50"
             >
               <span
                   class="flex items-center justify-center text-lg text-gray-400"
@@ -38,12 +34,13 @@
               </span>
               <span class="ml-3">Dashboard</span>
 
-            </router-link>
+            </RouterLink>
 
           </li>
           <li class="my-px">
-            <router-link key="users" to="/dashboard/products/"
+            <RouterLink key="products" to="/products"
                 class="borderTab  flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-pink-100"
+                         exactActiveClass="text-pink-600 bg-pink-50"
             >
               <span
                   class="flex items-center justify-center text-lg text-gray-400"
@@ -53,10 +50,10 @@
               </span>
               <span class="ml-3">Products</span>
 
-            </router-link>
+            </RouterLink>
           </li>
           <li class="my-px">
-            <router-link
+            <RouterLink
                 to="/"
                 @click="store.logOut()"
                 class="borderTab flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-pink-100"
@@ -73,7 +70,7 @@
                 </svg>
               </span>
               <span class="ml-3">Logout</span>
-            </router-link>
+            </RouterLink>
           </li>
         </ul>
       </div>
@@ -90,6 +87,9 @@ const color = reactive({
   state: `${store.getCurrentUser?.color ?? 'bg-blue-700'}`
 })
 console.log(color.state)
+console.log(store.getCurrentUser.value)
+
+const currentUser = computed(() => store.getCurrentUser);
 </script>
 
 <style scoped>
