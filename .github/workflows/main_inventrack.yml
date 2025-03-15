@@ -150,14 +150,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_24944A2073494247AC74D207EB24EC7B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E5C4F22AA9834EA7AB749D727568A075 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_992748FE555447BDB00FC390F25D85DD }}
 
-      - name: Deploy to Azure Web App
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: "inventrack"
-          slot-name: "Production"
+          app-name: 'inventrack'
+          slot-name: 'Production'
           package: .
-
