@@ -107,10 +107,10 @@ jobs:
 
       - name: Build frontend
         run: |
-          cd frontend
+          cd frontend/inventrack 
           npm install
           npm run build
-          cp -r dist/* ../backend/staticfiles/
+          cp -r dist/* ../../backend/staticfiles/
 
       - name: Run Django Collectstatic
         run: |
