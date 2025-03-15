@@ -100,6 +100,11 @@ jobs:
           cd backend
           pip install -r requirements.txt
 
+      - name: Run Django Collectstatic
+        run: |
+          cd backend
+          python manage.py collectstatic --noinput
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
