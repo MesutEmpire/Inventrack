@@ -146,8 +146,6 @@ const categories = computed(() => store.getCategories);
 const id = parseInt(route.params?.id);
 
 watchEffect(()=>{
-  store.fetchCategories()
-  store.fetchSuppliers()
   store.setInventoryForm(id);
 
 })
