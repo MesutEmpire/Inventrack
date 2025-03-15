@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia'
-
 import router from "@/router";
 import {computed, reactive, ref} from "vue";
+import Cookies from "js-cookie";
 
 export const UserAuthStore = defineStore('userAuth', () => {
     //STATE
@@ -20,7 +20,7 @@ export const UserAuthStore = defineStore('userAuth', () => {
     const authError = ref(null)
     const userAdmin = ref(false)
     const userSuper = ref(false)
-    const currentUser = reactive(JSON.parse(localStorage.getItem('currentUser')))
+    const currentUser = ref(JSON.parse(localStorage.getItem('currentUser') ?? null))
 
 
     //GETTERS
@@ -32,11 +32,25 @@ export const UserAuthStore = defineStore('userAuth', () => {
 
     const getAuthIsReady = computed(() => authIsReady)
 
-    const getCurrentUser = computed(() => currentUser)
+    const getCurrentUser = computed(() => currentUser.value)
 
     const getAuthError = computed(() => authError)
 
     //ACTIONS
+    const setTokens = (access_token = null, refresh_token=null) => {
+        if (access_token){
+            Cookies.set('access_token', access_token, { secure: true, httpOnly: false });
+        }
+        if (access_token){
+            Cookies.set('refresh_token', refresh_token, { secure: true, httpOnly: false });
+        }
+    };
+
+    const deleteTokens = () => {
+        Cookies.remove('access_token');
+        Cookies.remove('refresh_token');
+    };
+
     const signUp = () => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/register/`, {
             method: 'POST',
@@ -47,12 +61,17 @@ export const UserAuthStore = defineStore('userAuth', () => {
             .then((res) => res.json())
             .then((res) => {
                 resetForm()
-                this.currentUser = res.data
+                currentUser.value = res.data
                 localStorage.setItem('currentUser', JSON.stringify(res.data));
-                console.log("User", currentUser)
+                console.log("User", currentUser.value)
+                if (res.data.access_token && res.data.refresh_token) {
+                    setTokens(res.data.access_token, res.data.refresh_token);
+                } else {
+                    throw new Error("Invalid login response");
+                }
             })
-            .then(() => {
-                router.push('/SuperUser/')
+            .then(async () => {
+                await router.push('/')
             })
 
             .catch((err) => {
@@ -60,39 +79,63 @@ export const UserAuthStore = defineStore('userAuth', () => {
             })
 
     }
-    const logIn = () => {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login/`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include',
-            body: JSON.stringify({email: signInForm.email, password: signInForm.password})
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                resetForm()
-                this.currentUser = res.data
-                localStorage.setItem('currentUser', JSON.stringify(res.data));
-                console.log("User", currentUser)
-            })
-            .then(() => {
-                router.push('/SuperUser/')
-            })
-            .catch((err) => {
-                console.log(err.message)
-            })
-    }
+    const logIn = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email: signInForm.email, password: signInForm.password }),
+            });
+
+            const res = await response.json();
+
+            if (!response.ok) {
+                throw new Error(res.message || `HTTP Error: ${response.status}`);
+            }
+
+            if (!res.status) {
+                throw new Error(res.message || "Unknown error occurred");
+            }
+
+            resetForm()
+
+            console.log(res.data)
+
+            currentUser.value = res.data
+            localStorage.setItem('currentUser', JSON.stringify(res.data));
+            console.log("User", currentUser.value)
+
+            if (res.data?.access && res.data?.refresh) {
+                setTokens(res.data.access, res.data.refresh);
+            } else {
+                throw new Error("Invalid login response");
+            }
+
+            await router.push('/');
+        } catch (err) {
+            console.error("Login Error:", err.message);
+        }
+    };
+
     const logOut = () => {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'},
+        const access_token = Cookies.get('access_token');
+        const refresh_token = Cookies.get('refresh_token');
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout/`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${access_token}`
+            },
             credentials: 'include',
+            body: JSON.stringify({"refresh":refresh_token}),
         })
             .then((res) => res.json())
-            .then((res) => {
+            .then(async (res) => {
                 console.log(res)
-                this.currentUser = null
+                await router.push('/login')
+                currentUser.value = null
+                deleteTokens();
                 localStorage.removeItem('currentUser');
-                router.push('/')
             })
             .catch((err) => {
                 console.log(err.message)
@@ -186,33 +229,6 @@ export const UserAuthStore = defineStore('userAuth', () => {
             signInForm.level = "User",
             signInForm.remember_me = false
     }
-
-
-    //
-    //
-    // authState() {
-    //     onAuthStateChanged(auth,(user:any) => {
-    //         user?.getIdTokenResult()
-    //             .then((idTokenResult:any) =>{
-    //                 this.userAdmin = false
-    //                 this.userSuper = false
-    //
-    //                 if(idTokenResult.claims.superuser == true){
-    //                    this.userSuper = true
-    //                 }
-    //                 else if(idTokenResult.claims.admin == true){
-    //                     this.userAdmin = true
-    //                 }
-    //
-    //             })
-    //             .then(()=>{
-    //                 console.log(this.userAdmin,this.userSuper )
-    //             })
-    //         this.authIsReady = true
-    //         this.user = user
-    //
-    //     })
-    // },
 
     return {
         signInForm, user,
