@@ -125,11 +125,6 @@ jobs:
           npm run build
           cp -r dist/* ../../backend/staticfiles/
 
-      - name: Run Django Collectstatic
-        run: |
-          cd backend
-          python manage.py collectstatic --noinput
-
       - name: Zip project for deployment
         run: zip -r release.zip ./
 
