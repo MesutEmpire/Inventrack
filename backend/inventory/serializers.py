@@ -2,10 +2,14 @@ from .models import Item,Category,StockMovement,Supplier
 from rest_framework import serializers
 
 class ItemSerializer(serializers.ModelSerializer):
+    supplier_name = serializers.CharField(source='supplier.name', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True)
+
     class Meta:
         model = Item
-        fields = "__all__"
         read_only_fields = ["created_at", "updated_at"]
+        fields = ['id', 'name', 'supplier', 'supplier_name', 'category', 'category_name', 'created_at','quantity','price','description']
+
 
 
 class StockMovementSerializer(serializers.ModelSerializer):
