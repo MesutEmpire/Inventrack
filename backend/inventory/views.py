@@ -7,6 +7,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.db.models import Sum
 from datetime import datetime, timedelta
+from django.shortcuts import render
+
 
 class ItemViewSet(viewsets.ModelViewSet):
     """

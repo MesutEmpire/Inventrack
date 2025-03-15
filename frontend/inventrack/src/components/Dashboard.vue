@@ -55,6 +55,9 @@ const chartOptions = ref({
 });
 
 const store = InventoryStore();
+const items = computed(()=> store.getInventory)
+const categories = computed(()=>store.getCategories)
+
 
 const dashboardItems = computed(() => [
   { title: "Inventory", no: items.value.length, colour: "bg-green-600", abbr: "Inv" },

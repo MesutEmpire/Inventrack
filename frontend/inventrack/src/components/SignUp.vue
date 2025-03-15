@@ -3,7 +3,7 @@
 
     <div class="flex flex-col gap-y-5 p-4 rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8">
       <div class="flex justify-center ">
-        <img src="../assets/vue.svg" class="mr-3 h-16 lg:h-24 object-fill "
+        <img src="../assets/logo.png" class="mr-3 h-16 lg:h-24 object-fill "
                                              alt="Inventrack Logo"></div>
       <div class="flex justify-center text-2xl lg:text-4xl font-bold ">
         Create Account

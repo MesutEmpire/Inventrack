@@ -3,7 +3,7 @@
   <nav class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded z-10">
     <div class="container flex flex-wrap justify-between items-center mx-auto">
       <router-link to="/" class="flex items-center">
-        <img src="../assets/vue.svg" class="mr-3 h-14 sm:h-16" alt="Flowbite Logo">
+        <img src="../assets/logo.png" class="mr-3 h-14 sm:h-16" alt="Inventrack">
         <span class="self-center text-3xl font-semibold whitespace-nowrap">Inventrack</span>
       </router-link>
       <div class="flex items-center md:order-2">
