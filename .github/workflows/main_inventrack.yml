@@ -106,8 +106,8 @@ jobs:
         run: |
           source backend/venv/bin/activate
           python backend/manage.py collectstatic --noinput
-          python manage.py makemigrations
-          python manage.py migrate
+          python backend/manage.py makemigrations
+          python backend/manage.py migrate
 
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
