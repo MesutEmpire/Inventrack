@@ -93,17 +93,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.12"
 
       - name: Install backend dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
+          python -m venv backend/venv
+          source backend/venv/bin/activate
+          pip install --upgrade pip
           pip install -r backend/requirements.txt
+
       - name: Collect static files
         run: |
-          source venv/bin/activate
+          source backend/venv/bin/activate
           python backend/manage.py collectstatic --noinput
+          python manage.py makemigrations
+          python manage.py migrate
+
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           DEBUG: ${{ secrets.DEBUG }}
@@ -124,9 +129,12 @@ jobs:
           npm install
           npm run build
           cp -r dist/* ../../backend/staticfiles/
+        
+        env:
+          VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
 
       - name: Zip project for deployment
-        run: zip -r release.zip ./
+        run: zip -r release.zip ./ -x "backend/venv/*"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -141,8 +149,8 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
 
     steps:

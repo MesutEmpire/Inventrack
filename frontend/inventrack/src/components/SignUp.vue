@@ -33,7 +33,7 @@
 
         <div class="flex flex-row items-center flex-wrap md:flex-nowrap  gap-x-4 gap-y-3">
 
-        <div class="relative w-full relative">
+        <div class="relative w-full">
           <input type="tel" id="phone_number" v-model="store.signInForm.phone_number"
                  class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-white  rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                  placeholder=" " required />
@@ -42,7 +42,7 @@
             Phone Number</label>
         </div>
 
-        <div class="relative w-full relative">
+        <div class="relative w-full">
           <input type="email" id="email" v-model="store.signInForm.email"
                  class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-white  rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                  placeholder=" " required />
@@ -54,7 +54,7 @@
 
         <div class="flex flex-row items-center flex-wrap md:flex-nowrap gap-x-4 gap-y-3">
 
-        <div class="relative w-full relative">
+        <div class="relative w-full">
           <input type="password" id="password" v-model="store.signInForm.password"
                  class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-white  rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                  placeholder=" " required />
@@ -62,7 +62,7 @@
                  class="absolute text-sm lg:text-base text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
             New Password</label>
         </div>
-        <div class="relative w-full relative">
+        <div class="relative w-full">
           <input type="password" id="confirm_password" v-model="store.signInForm.confirm_password"
 
                  class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -88,18 +88,29 @@
           </router-link>
         </div>
 
+           <div
+              v-if="store.currentUser"
+              class="p-4 mb-4 text-sm  max-w-xs mx-auto lg:text-base text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+              role="alert"
+          >
+            <span class="font-medium">Sign Up Successful </span>
+          </div>
+          <div
+              v-if="store.authError" 
+              class="p-4 mb-4 text-sm  max-w-xs mx-auto lg:text-base text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+              role="alert"
+          >
+            <span class="font-medium">Sign Up Failed : </span> {{ store.getAuthError }}
+          </div>
+
       </form>
     </div>
   </div>
-  <div v-if="store.getAuthError">
-    {{store.getAuthError}}
-  </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {UserAuthStore} from "@/stores/userAuthStore";
-
-    const store = UserAuthStore()
+const store = UserAuthStore()
 
 </script>
 

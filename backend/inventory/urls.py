@@ -10,7 +10,6 @@ router.register(r'suppliers', SupplierViewSet)
 router.register(r'categories', CategoryViewSet)
 
 urlpatterns = [
- path("", index),
     path('', include(router.urls)),
     path('charts/doughnut/', DoughnutChartView.as_view(), name='doughnut-chart'),
     path('charts/line/', LineChartView.as_view(), name='line-chart'),

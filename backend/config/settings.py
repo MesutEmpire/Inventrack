@@ -30,8 +30,8 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY',default='django-insecure-got8^mjd8i_yqx=aw($@t8za**hkrz+a85+w-ep=ai^wm3eyo2')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=True)
-
+# DEBUG = env.bool('DEBUG', default=True)
+DEBUG = False
 # Application definition
 
 INSTALLED_APPS = [
@@ -135,9 +135,13 @@ USE_TZ = True
 # STATIC_URL = 'static/'
 
 
-STATIC_URL = "/static/"
+STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STATICFILES_DIRS = [os.path.join(BASE_DIR.parent, "frontend/inventrack", "dist")]
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

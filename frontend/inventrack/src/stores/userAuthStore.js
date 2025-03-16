@@ -51,16 +51,36 @@ export const UserAuthStore = defineStore('userAuth', () => {
         Cookies.remove('refresh_token');
     };
 
-    const signUp = () => {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/register/`, {
+    const signUp = async () => {
+        try {
+
+            if (signInForm.password.length <= 6) {
+                throw new Error(`Password must be more than 6 characters.`); 
+            }else if (signInForm.confirm_password != signInForm.password) {
+                throw new Error(`Password and Confirm Password must be the same.`); 
+            }
+
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/register/`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             credentials: 'include',
             body: JSON.stringify(signInForm)
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                resetForm()
+            })
+            
+
+            const res = await response.json();
+
+
+            if (!response.ok) {
+                throw new Error(res.message || `HTTP Error: ${response.status}`);
+            }
+
+            if (!res.status) {
+                throw new Error(res.message || "Unknown error occurred");
+            }
+
+            resetForm()
+
                 currentUser.value = res.data
                 localStorage.setItem('currentUser', JSON.stringify(res.data));
                 console.log("User", currentUser.value)
@@ -69,15 +89,14 @@ export const UserAuthStore = defineStore('userAuth', () => {
                 } else {
                     throw new Error("Invalid login response");
                 }
-            })
-            .then(async () => {
-                await router.push('/')
-            })
 
-            .catch((err) => {
-                console.log(err.message)
-            })
+            await router.push('/');
 
+         }
+        catch (err) {
+                setError(err.message)
+                console.log(err.message)  
+        }
     }
     const logIn = async () => {
         try {
@@ -114,6 +133,7 @@ export const UserAuthStore = defineStore('userAuth', () => {
 
             await router.push('/');
         } catch (err) {
+            setError(err.message)
             console.error("Login Error:", err.message);
         }
     };
@@ -138,6 +158,7 @@ export const UserAuthStore = defineStore('userAuth', () => {
                 localStorage.removeItem('currentUser');
             })
             .catch((err) => {
+                setError(err.message)
                 console.log(err.message)
             })
     }
@@ -230,6 +251,14 @@ export const UserAuthStore = defineStore('userAuth', () => {
             signInForm.remember_me = false
     }
 
+    const setError = (message) => {
+        authError.value = message
+
+        setTimeout(() => {
+            authError.value = null
+        },5000)
+    }
+
     return {
         signInForm, user,
         authIsReady,
@@ -243,6 +272,6 @@ export const UserAuthStore = defineStore('userAuth', () => {
         getAuthIsReady,
         getCurrentUser,
         getAuthError,
-        signUp, logIn, logOut, authUser, authAdmin, authSuper, resetForm
+        signUp, logIn, logOut, authUser, authAdmin, authSuper, resetForm,setError
     }
 })
